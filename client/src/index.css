@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-900 text-slate-100;
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+input,
+select,
+textarea {
+  @apply bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-slate-100 placeholder-slate-400;
+}
+
+button {
+  @apply transition;
+}
+
+.resolveit-home.corporate-gray {
+  background: #e5e7eb !important;
+  color: #1f2937;
+}
+
+.resolveit-home.corporate-gray header {
+  background-color: rgba(229, 231, 235, 0.95) !important;
+  border-color: #9ca3af !important;
+}
+
+.resolveit-home.corporate-gray section:first-of-type {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 45%, #4b5563 100%) !important;
+}
+
+.resolveit-home.corporate-gray [class*='bg-slate-800'],
+.resolveit-home.corporate-gray [class*='bg-slate-900'],
+.resolveit-home.corporate-gray [class*='bg-slate-950'] {
+  background-color: #d1d5db !important;
+}
+
+.resolveit-home.corporate-gray [class*='border-slate-6'],
+.resolveit-home.corporate-gray [class*='border-slate-7'],
+.resolveit-home.corporate-gray [class*='border-slate-8'] {
+  border-color: #9ca3af !important;
+}
+
+.resolveit-home.corporate-gray [class*='text-slate-100'],
+.resolveit-home.corporate-gray [class*='text-slate-200'],
+.resolveit-home.corporate-gray [class*='text-slate-300'],
+.resolveit-home.corporate-gray [class*='text-slate-400'],
+.resolveit-home.corporate-gray [class*='text-slate-500'] {
+  color: #374151 !important;
+}
+
+.resolveit-home.corporate-gray h1,
+.resolveit-home.corporate-gray h2,
+.resolveit-home.corporate-gray h3,
+.resolveit-home.corporate-gray h4,
+.resolveit-home.corporate-gray .font-bold,
+.resolveit-home.corporate-gray .font-semibold {
+  color: #111827 !important;
+}
+
+.resolveit-home.corporate-gray input,
+.resolveit-home.corporate-gray textarea,
+.resolveit-home.corporate-gray select {
+  background-color: #e5e7eb !important;
+  color: #111827 !important;
+  border-color: #9ca3af !important;
+}
+
+.resolveit-home.corporate-gray .bg-blue-500 {
+  background-color: #2563eb !important;
+}
+
+.resolveit-home.corporate-gray .hover\:bg-blue-600:hover {
+  background-color: #1d4ed8 !important;
+}

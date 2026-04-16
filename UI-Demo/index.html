@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResolveIT - Complaint & Grievance Redressal System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-wrap">
+      <a href="#home" class="logo">ResolveIT</a>
+      <button class="menu-toggle" aria-label="Toggle Menu">Menu</button>
+      <nav class="menu">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="tag">Corporate Complaint Management System</p>
+          <h1>Simplifying Complaint Resolution for Modern Organizations</h1>
+          <p class="desc">ResolveIT enables employees and customers to submit, track, and resolve complaints efficiently with real-time status updates and transparent workflows.</p>
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">Submit Complaint</a>
+            <a href="#dashboard" class="btn btn-secondary">Track Complaint</a>
+          </div>
+        </div>
+        <div class="grid-2 cards">
+          <article class="card"><h3>Smart Complaint Tracking</h3><p>Auto-generated complaint IDs with real-time status tracking.</p></article>
+          <article class="card"><h3>Admin Dashboard</h3><p>Monitor complaints, assign tasks, and manage resolution workflows.</p></article>
+          <article class="card"><h3>Role-Based Access</h3><p>Secure login for admins, staff, and users with permission control.</p></article>
+          <article class="card"><h3>Evidence & Attachments</h3><p>Upload screenshots or documents to support complaints.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2>Features</h2>
+        <div class="grid-3">
+          <article class="card"><h3>Role-Based Dashboards</h3><p>Different dashboards for users, administrators, and support teams.</p></article>
+          <article class="card"><h3>Complaint Management</h3><p>Create, filter, update, and manage complaint statuses efficiently.</p></article>
+          <article class="card"><h3>Analytics & Reports</h3><p>Visual insights with charts showing open, resolved, and pending complaints.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="section">
+      <div class="container">
+        <h2>How It Works</h2>
+        <div class="grid-4">
+          <article class="card"><span>Step 1</span><h3>Submit Complaint</h3></article>
+          <article class="card"><span>Step 2</span><h3>Complaint Assigned to Authority</h3></article>
+          <article class="card"><span>Step 3</span><h3>Investigation and Review</h3></article>
+          <article class="card"><span>Step 4</span><h3>Resolution and Feedback</h3></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="section">
+      <div class="container">
+        <h2>Dashboard Preview</h2>
+        <div class="card dashboard-preview">
+          <div class="metrics">
+            <div><p>Open</p><strong>18</strong></div>
+            <div><p>Pending</p><strong>09</strong></div>
+            <div><p>Resolved</p><strong>42</strong></div>
+          </div>
+          <div class="table">
+            <div class="row head"><span>ID</span><span>Category</span><span>Status</span><span>Updated</span></div>
+            <div class="row"><span>CMP-2026-104</span><span>Network</span><span class="blue">In Progress</span><span>2 mins ago</span></div>
+            <div class="row"><span>CMP-2026-105</span><span>Software</span><span class="green">Resolved</span><span>12 mins ago</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container grid-2 contact-grid">
+        <div class="card">
+          <h2>Contact</h2>
+          <p>Email: support@resolveit.com</p>
+          <p>Helpdesk: +91 90000 11111</p>
+          <p>Availability: Mon - Fri, 9:00 AM to 6:00 PM</p>
+        </div>
+        <form class="card form">
+          <input type="email" placeholder="Email" />
+          <textarea rows="5" placeholder="Message"></textarea>
+          <button type="button" class="btn btn-primary">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <div>
+        <h3>ResolveIT</h3>
+        <p>Complaint & Grievance Redressal System</p>
+      </div>
+      <div class="quick-links">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p>© 2026 ResolveIT. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-toggle');
+    const menu = document.querySelector('.menu');
+    btn.addEventListener('click', () => menu.classList.toggle('open'));
+  </script>
+</body>
+</html>
