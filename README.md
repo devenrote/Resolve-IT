@@ -5,7 +5,7 @@ ResolveIT is a full-stack helpdesk platform for internal corporate IT support.
 ## Tech Stack
 - Frontend: React (Vite) + Tailwind CSS
 - Backend: Node.js + Express
-- Database: MySQL
+- Database: PostgreSQL
 - Auth: JWT + bcrypt
 - Uploads: Multer
 - Charts: Recharts
