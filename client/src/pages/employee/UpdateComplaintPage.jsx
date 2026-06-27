@@ -3,14 +3,16 @@ import toast from 'react-hot-toast'
 import { complaintApi } from '../../services/complaintService'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import { getStatusBadge } from '../../utils/status'
+import { resolveFileUrl } from '../../utils/fileUrl'
 
 const priorities = ['Low', 'Medium', 'High', 'Critical']
-const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL || 'http://localhost:5001'
 
 function UpdateComplaintPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [complaints, setComplaints] = useState([])
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 })
+  const [page, setPage] = useState(1)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState({
     title: '',
@@ -21,11 +23,12 @@ function UpdateComplaintPage() {
     existingAttachment: '',
   })
 
-  const loadComplaints = async () => {
+  const loadComplaints = async (nextPage = page) => {
     setLoading(true)
     try {
-      const response = await complaintApi.getMyComplaints({ page: 1, limit: 100 })
+      const response = await complaintApi.getMyComplaints({ page: nextPage, limit: 8 })
       setComplaints(response.complaints)
+      setPagination(response.pagination)
     } catch (error) {
       toast.error(error?.response?.data?.message || 'Failed to load complaints')
     } finally {
@@ -35,7 +38,7 @@ function UpdateComplaintPage() {
 
   useEffect(() => {
     loadComplaints()
-  }, [])
+  }, [page])
 
   const startEdit = (item) => {
     if (item.status !== 'Pending') {
@@ -82,7 +85,7 @@ function UpdateComplaintPage() {
       await complaintApi.updateMyComplaint(editingId, fd)
       toast.success('Complaint updated')
       clearEdit()
-      await loadComplaints()
+      await loadComplaints(page)
     } catch (error) {
       toast.error(error?.response?.data?.message || 'Failed to update complaint')
     } finally {
@@ -97,7 +100,7 @@ function UpdateComplaintPage() {
       await complaintApi.cancelMyComplaint(id)
       toast.success('Complaint cancelled')
       if (editingId === id) clearEdit()
-      await loadComplaints()
+      await loadComplaints(page)
     } catch (error) {
       toast.error(error?.response?.data?.message || 'Failed to cancel complaint')
     }
@@ -155,6 +158,26 @@ function UpdateComplaintPage() {
               </tbody>
             </table>
           </div>
+
+          <div className="px-4 py-3 border-t border-slate-700 flex items-center gap-2">
+            <button
+              className="px-3 py-1 rounded bg-slate-700 disabled:opacity-40"
+              disabled={page <= 1}
+              onClick={() => setPage((currentPage) => currentPage - 1)}
+            >
+              Prev
+            </button>
+            <span className="text-sm text-slate-300">
+              Page {pagination.page || 1} / {pagination.totalPages || 1}
+            </span>
+            <button
+              className="px-3 py-1 rounded bg-slate-700 disabled:opacity-40"
+              disabled={page >= (pagination.totalPages || 1)}
+              onClick={() => setPage((currentPage) => currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
 
@@ -199,13 +222,14 @@ function UpdateComplaintPage() {
             <label className="block text-sm text-slate-300 mb-1.5">Update Attachment (optional)</label>
             <input
               type="file"
-              accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
+              accept=".png,.jpg,.jpeg,.webp,.pdf,.zip,.doc,.docx,.xls,.xlsx"
               onChange={(e) => setForm({ ...form, attachment: e.target.files?.[0] || null })}
               className="w-full"
             />
+            <p className="text-xs text-slate-400 mt-1">Allowed: image, PDF, ZIP, DOC, DOCX, XLS, XLSX (max 10MB)</p>
             {form.existingAttachment && (
               <a
-                href={`${uploadBaseUrl}/uploads/${form.existingAttachment}`}
+                href={resolveFileUrl(form.existingAttachment)}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-block mt-2 text-blue-400 hover:text-blue-300 underline text-sm"

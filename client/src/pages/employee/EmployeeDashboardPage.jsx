@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { complaintApi } from '../../services/complaintService'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import { getStatusBadge } from '../../utils/status'
-
-const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL || 'http://localhost:5001'
+import { resolveFileUrl } from '../../utils/fileUrl'
 
 function EmployeeDashboardPage() {
   const [data, setData] = useState({ complaints: [], pagination: {} })
@@ -95,7 +94,7 @@ function EmployeeDashboardPage() {
                     <td className="px-4 py-3 text-slate-300">
                       {item.attachment ? (
                         <a
-                          href={`${uploadBaseUrl}/uploads/${item.attachment}`}
+                          href={resolveFileUrl(item.attachment)}
                           target="_blank"
                           rel="noreferrer"
                           className="text-blue-400 hover:text-blue-300 underline"

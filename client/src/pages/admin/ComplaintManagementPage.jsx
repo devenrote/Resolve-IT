@@ -3,9 +3,9 @@ import toast from 'react-hot-toast'
 import { complaintApi } from '../../services/complaintService'
 import { getStatusBadge } from '../../utils/status'
 import LoadingSpinner from '../../components/LoadingSpinner'
+import { resolveFileUrl } from '../../utils/fileUrl'
 
 const statuses = ['Pending', 'In Progress', 'Resolved', 'Closed']
-const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL || 'http://localhost:5001'
 
 function ComplaintManagementPage() {
   const [complaints, setComplaints] = useState([])
@@ -99,7 +99,7 @@ function ComplaintManagementPage() {
               <p className="text-slate-300 text-sm mt-3">{item.description}</p>
               {item.attachment && (
                 <a
-                  href={`${uploadBaseUrl}/uploads/${item.attachment}`}
+                  href={resolveFileUrl(item.attachment)}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block mt-3 text-blue-400 hover:text-blue-300 underline text-sm"

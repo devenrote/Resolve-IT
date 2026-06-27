@@ -1,3 +1,6 @@
+const fs = require('fs');
+const fsPromises = require('fs/promises');
+const path = require('path');
 const {
   createComplaint,
   getComplaintsByUser,
@@ -9,6 +12,7 @@ const {
   deleteComplaint,
   getComplaintAnalytics,
 } = require('../models/complaintModel');
+const { cloudinary, assertCloudinaryConfigured } = require('../config/cloudinary');
 
 const mapServerError = (error, fallback) => {
   if (!error) return fallback;
@@ -25,12 +29,98 @@ const parsePagination = (query) => {
   return { page, limit };
 };
 
+const legacyAttachmentDirs = [
+  path.join(__dirname, '..', 'uploads'),
+  path.join(__dirname, '..', 'tmp', 'uploads'),
+];
+
+const findLegacyAttachmentPath = (fileName) => {
+  const safeFileName = path.basename(fileName || '');
+  if (!safeFileName) return null;
+
+  for (const dir of legacyAttachmentDirs) {
+    const fullPath = path.join(dir, safeFileName);
+    if (fs.existsSync(fullPath)) {
+      return fullPath;
+    }
+  }
+
+  return null;
+};
+
+const getCloudinaryResourceType = (file) => {
+  if (!file?.mimetype) return 'raw';
+  if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
+    return 'image';
+  }
+  return 'raw';
+};
+
+const removeTempFile = async (file) => {
+  if (!file?.path) return;
+
+  try {
+    await fsPromises.unlink(file.path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      console.warn(`Failed to remove temp upload: ${file.path}`);
+    }
+  }
+};
+
+const uploadFileToCloudinary = async (file) => {
+  if (!file) return null;
+
+  if (!file.path) {
+    const error = new Error('Missing image file for upload');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  assertCloudinaryConfigured();
+
+  try {
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'resolveit/complaints',
+      resource_type: getCloudinaryResourceType(file),
+      use_filename: true,
+      unique_filename: true,
+      overwrite: false,
+    });
+
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+      resourceType: result.resource_type,
+    };
+  } catch (error) {
+    const uploadError = new Error(error?.message || 'Failed to upload file to Cloudinary');
+    uploadError.statusCode = 502;
+    uploadError.code = error?.http_code || error?.code || 'CLOUDINARY_UPLOAD_FAILED';
+    throw uploadError;
+  } finally {
+    await removeTempFile(file);
+  }
+};
+
+const getRequestFile = (req) => req.files?.attachment?.[0] || req.files?.image?.[0] || null;
+
+const serveLegacyAttachment = async (req, res) => {
+  const resolvedPath = findLegacyAttachmentPath(req.params.fileName);
+
+  if (!resolvedPath) {
+    return res.status(404).json({ message: 'Attachment file not found on server. Please re-upload this complaint attachment.' });
+  }
+
+  return res.sendFile(resolvedPath);
+};
+
 const create = async (req, res) => {
   try {
-    const attachmentFile = req.files?.attachment?.[0] || req.files?.image?.[0] || null;
-    const attachment = attachmentFile ? attachmentFile.filename : null;
-
-    const image = attachmentFile && attachmentFile.mimetype.startsWith('image/') ? attachmentFile.filename : null;
+    const attachmentFile = getRequestFile(req);
+    const uploadedFile = await uploadFileToCloudinary(attachmentFile);
+    const attachment = uploadedFile ? uploadedFile.url : null;
+    const image = attachmentFile?.mimetype?.startsWith('image/') ? uploadedFile?.url || null : null;
 
     const complaint = await createComplaint({
       userId: req.user.id,
@@ -44,6 +134,10 @@ const create = async (req, res) => {
 
     return res.status(201).json({ message: 'Complaint created', complaint });
   } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+
     return res.status(500).json({ message: mapServerError(error, 'Failed to create complaint') });
   }
 };
@@ -119,11 +213,12 @@ const allComplaints = async (req, res) => {
 
 const updateMine = async (req, res) => {
   try {
-    const attachmentFile = req.files?.attachment?.[0] || req.files?.image?.[0];
-    const attachment = attachmentFile ? attachmentFile.filename : undefined;
+    const attachmentFile = getRequestFile(req);
+    const uploadedFile = await uploadFileToCloudinary(attachmentFile);
+    const attachment = uploadedFile ? uploadedFile.url : undefined;
     const image = attachmentFile
       ? attachmentFile.mimetype.startsWith('image/')
-        ? attachmentFile.filename
+        ? uploadedFile?.url || null
         : null
       : undefined;
 
@@ -144,6 +239,10 @@ const updateMine = async (req, res) => {
 
     return res.json({ message: 'Complaint updated', complaint: result });
   } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+
     return res.status(500).json({ message: mapServerError(error, 'Failed to update complaint') });
   }
 };
@@ -207,6 +306,7 @@ const analytics = async (_req, res) => {
 };
 
 module.exports = {
+  serveLegacyAttachment,
   create,
   myComplaints,
   trackMyComplaintByTicket,

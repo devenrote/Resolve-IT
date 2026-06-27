@@ -94,11 +94,11 @@ function CreateComplaintPage() {
             <label className="block text-sm text-slate-300 mb-1.5">Attachment (optional)</label>
             <input
               type="file"
-              accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
+              accept=".png,.jpg,.jpeg,.webp,.pdf,.zip,.doc,.docx,.xls,.xlsx"
               onChange={(e) => setForm({ ...form, attachment: e.target.files?.[0] || null })}
               className="w-full"
             />
-            <p className="text-xs text-slate-400 mt-1">Allowed: image, PDF, DOC, DOCX (max 10MB)</p>
+            <p className="text-xs text-slate-400 mt-1">Allowed: image, PDF, ZIP, DOC, DOCX, XLS, XLSX (max 10MB)</p>
           </div>
         </div>
 

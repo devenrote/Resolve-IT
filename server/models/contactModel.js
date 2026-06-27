@@ -7,7 +7,7 @@ const ensureContactTable = async () => {
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS contact_messages (
-      id INT PRIMARY KEY AUTO_INCREMENT,
+      id SERIAL PRIMARY KEY,
       email VARCHAR(150) NOT NULL,
       message TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -19,12 +19,12 @@ const ensureContactTable = async () => {
 
 const createContactMessage = async ({ email, message }) => {
   await ensureContactTable();
-  const [result] = await pool.query(
-    'INSERT INTO contact_messages (email, message) VALUES (?, ?)',
+  const result = await pool.query(
+    'INSERT INTO contact_messages (email, message) VALUES ($1, $2) RETURNING id',
     [email, message]
   );
 
-  return result.insertId;
+  return result.rows[0].id;
 };
 
 module.exports = {

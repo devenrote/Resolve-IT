@@ -6,12 +6,12 @@ const ensureProfileColumns = async () => {
   if (profileColumnsEnsured) return;
 
   const hasColumn = async (columnName) => {
-    const [rows] = await pool.query(
+    const { rows } = await pool.query(
       `SELECT 1
-       FROM information_schema.COLUMNS
-       WHERE TABLE_SCHEMA = DATABASE()
-         AND TABLE_NAME = 'users'
-         AND COLUMN_NAME = ?
+       FROM information_schema.columns
+       WHERE table_schema = 'public'
+         AND table_name = 'users'
+         AND column_name = $1
        LIMIT 1`,
       [columnName]
     );
@@ -19,7 +19,7 @@ const ensureProfileColumns = async () => {
   };
 
   if (!(await hasColumn('role'))) {
-    await pool.query("ALTER TABLE users ADD COLUMN role ENUM('employee','admin') NOT NULL DEFAULT 'employee'");
+    await pool.query("ALTER TABLE users ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'employee'");
   }
   if (!(await hasColumn('nick_name'))) {
     await pool.query('ALTER TABLE users ADD COLUMN nick_name VARCHAR(100) DEFAULT NULL');
@@ -46,15 +46,15 @@ const ensureProfileColumns = async () => {
 
 const findUserByEmail = async (email) => {
   await ensureProfileColumns();
-  const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+  const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
   return rows[0] || null;
 };
 
 const findUserById = async (id) => {
   await ensureProfileColumns();
-  const [rows] = await pool.query(
+  const { rows } = await pool.query(
     `SELECT id, name, email, role, nick_name, country, language, timezone, linkedin_url, created_at
-     FROM users WHERE id = ?`,
+     FROM users WHERE id = $1`,
     [id]
   );
   return rows[0] || null;
@@ -62,20 +62,20 @@ const findUserById = async (id) => {
 
 const createUser = async ({ name, email, passwordHash, role }) => {
   await ensureProfileColumns();
-  const [result] = await pool.query(
-    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+  const result = await pool.query(
+    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id',
     [name, email, passwordHash, role]
   );
 
-  return result.insertId;
+  return result.rows[0].id;
 };
 
 const updateUserProfile = async ({ id, name, email, nick_name, country, language, timezone, linkedin_url }) => {
   await ensureProfileColumns();
   await pool.query(
     `UPDATE users
-     SET name = ?, email = ?, nick_name = ?, country = ?, language = ?, timezone = ?, linkedin_url = ?
-     WHERE id = ?`,
+     SET name = $1, email = $2, nick_name = $3, country = $4, language = $5, timezone = $6, linkedin_url = $7
+     WHERE id = $8`,
     [name, email, nick_name || null, country || null, language || null, timezone || null, linkedin_url || null, id]
   );
   return findUserById(id);
@@ -85,30 +85,39 @@ const listUsers = async ({ page, limit }) => {
   await ensureProfileColumns();
   const offset = (page - 1) * limit;
 
-  const [rows] = await pool.query(
+  const { rows } = await pool.query(
     `SELECT id, name, email, role, created_at
      FROM users
      ORDER BY created_at DESC
-     LIMIT ? OFFSET ?`,
+     LIMIT $1 OFFSET $2`,
     [limit, offset]
   );
 
-  const [[{ total }]] = await pool.query('SELECT COUNT(*) AS total FROM users');
-  const [[stats]] = await pool.query(`
+  const totalRes = await pool.query('SELECT COUNT(*) AS total FROM users');
+  const total = Number(totalRes.rows[0].total || 0);
+
+  const statsRes = await pool.query(`
     SELECT
       COUNT(*) AS total_users,
       SUM(CASE WHEN role = 'employee' THEN 1 ELSE 0 END) AS total_employees,
       SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) AS total_admins
     FROM users
   `);
+  
+  const rawStats = statsRes.rows[0] || {};
+  const stats = {
+    total_users: Number(rawStats.total_users || 0),
+    total_employees: Number(rawStats.total_employees || 0),
+    total_admins: Number(rawStats.total_admins || 0),
+  };
 
   return { rows, total, stats };
 };
 
 const updateUserPasswordById = async ({ id, passwordHash }) => {
   await ensureProfileColumns();
-  const [result] = await pool.query('UPDATE users SET password = ? WHERE id = ?', [passwordHash, id]);
-  return result.affectedRows > 0;
+  const result = await pool.query('UPDATE users SET password = $1 WHERE id = $2', [passwordHash, id]);
+  return result.rowCount > 0;
 };
 
 module.exports = {

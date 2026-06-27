@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const multer = require('multer');
 const pool = require('./config/db');
 
 const authRoutes = require('./routes/authRoutes');
@@ -21,7 +22,6 @@ const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...configuredOrigi
 app.use(
   cors({
     origin: (origin, cb) => {
-      // Allow server-to-server tools and non-browser clients that send no Origin header.
       if (!origin) return cb(null, true);
       if (allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error(`CORS blocked for origin: ${origin}`));
@@ -55,8 +55,20 @@ app.use('/api/users', userRoutes);
 app.use('/api/contact', contactRoutes);
 
 app.use((err, _req, res, _next) => {
-  if (err && (err.message === 'Only image files are allowed' || err.message === 'Only image/pdf/doc/docx files are allowed')) {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File size must be 10MB or less' });
+    }
+
+    return res.status(400).json({ message: err.message || 'File upload failed' });
+  }
+
+  if (err && (err.message === 'Only image files are allowed' || err.message === 'Only image/pdf/zip/doc/docx/xls/xlsx files are allowed')) {
     return res.status(400).json({ message: err.message });
+  }
+
+  if (err?.statusCode) {
+    return res.status(err.statusCode).json({ message: err.message });
   }
 
   return res.status(500).json({ message: err.message || 'Internal server error' });
@@ -66,4 +78,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`ResolveIT server running on port ${PORT}`);
 });
-

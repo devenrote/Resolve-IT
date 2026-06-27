@@ -1,5 +1,6 @@
 const express = require('express');
 const {
+  serveLegacyAttachment,
   create,
   myComplaints,
   trackMyComplaintByTicket,
@@ -12,7 +13,7 @@ const {
 } = require('../controllers/complaintController');
 const auth = require('../middleware/authMiddleware');
 const authorizeRoles = require('../middleware/roleMiddleware');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/upload');
 const {
   validateComplaintCreate,
   validateComplaintUpdate,
@@ -20,6 +21,8 @@ const {
 } = require('../middleware/validationMiddleware');
 
 const router = express.Router();
+
+router.get('/attachment/:fileName', serveLegacyAttachment);
 
 router.post(
   '/',

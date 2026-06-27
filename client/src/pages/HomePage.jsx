@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import PublicNavbar from '../components/PublicNavbar'
@@ -39,7 +39,38 @@ function HomePage() {
     e.preventDefault()
     try {
       setSending(true)
+
+      // 1. Store contact details in database via backend API
       const data = await contactApi.sendMessage(contactForm)
+
+      // 2. Submit details to Web3Forms client-side so user receives the email
+      try {
+        const web3Response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: '82d55ba7-5169-4b6f-9f00-dfd600a29563',
+            email: contactForm.email,
+            message: contactForm.message,
+            from_name: 'ResolveIT Support Inquiry',
+            subject: `New Inquiry from ${contactForm.email}`,
+          }),
+        })
+        const web3Result = await web3Response.json()
+        if (web3Response.ok && web3Result.success) {
+          // toast.success('Email notification sent successfully!')
+        } else {
+          console.error('Failed to submit message to Web3Forms:', web3Result)
+          toast.error(`Email delivery failed: ${web3Result.message || 'Unknown error'}`)
+        }
+      } catch (web3Error) {
+        console.error('Error submitting contact message to Web3Forms:', web3Error)
+        toast.error(`Email network error: ${web3Error.message}`)
+      }
+
       toast.success(data.message || 'Message sent successfully')
       setContactForm({ email: '', message: '' })
     } catch (error) {
@@ -52,9 +83,8 @@ function HomePage() {
   return (
     <div
       id="top"
-      className={`resolveit-home min-h-screen bg-slate-900 text-slate-100 ${
-        isCorporateGray ? 'corporate-gray' : ''
-      }`}
+      className={`resolveit-home min-h-screen bg-slate-900 text-slate-100 ${isCorporateGray ? 'corporate-gray' : ''
+        }`}
     >
       <PublicNavbar
         onSectionNavigate={scrollToSection}
@@ -147,8 +177,10 @@ function HomePage() {
             <p className="text-slate-300 text-sm mt-1">Always-On Helpdesk: 24/7 Incident Support</p>
           </div>
           <form onSubmit={handleSendMessage} className="bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-3 transition-all duration-300 hover:border-blue-500/70 hover:shadow-xl hover:shadow-blue-950/30">
+            <input type="hidden" name="access_key" value="82d55ba7-5169-4b6f-9f00-dfd600a29563" />
             <input
               type="email"
+              name="email"
               placeholder="Your Email"
               className="w-full transition-all duration-300 focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
               value={contactForm.email}
@@ -157,6 +189,7 @@ function HomePage() {
             />
             <textarea
               rows={4}
+              name="message"
               placeholder="Your Message"
               className="w-full transition-all duration-300 focus:ring-2 focus:ring-blue-500/60 focus:border-blue-500"
               value={contactForm.message}
