@@ -10,9 +10,9 @@ const navItems = [
   { label: 'Contact', id: 'contact' },
 ]
 
-function PublicNavbar({ onSectionNavigate, isCorporateGray = false, onToggleTheme }) {
+function PublicNavbar({ onSectionNavigate }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { user, logout } = useAuth()
+  const { user, logout, theme, toggleTheme } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -55,16 +55,14 @@ function PublicNavbar({ onSectionNavigate, isCorporateGray = false, onToggleThem
         </div>
 
         <div className="hidden lg:flex items-center gap-2 ml-auto">
-          {onToggleTheme && (
-            <button
-              onClick={onToggleTheme}
-              aria-label="Toggle theme"
-              title={isCorporateGray ? 'Switch to original theme' : 'Switch to Corporate Gray theme'}
-              className="w-10 h-10 grid place-items-center rounded-md bg-slate-800 hover:bg-slate-700 hover:shadow-md hover:shadow-slate-900/60 text-lg transition-all duration-300 hover:-translate-y-0.5"
-            >
-              {isCorporateGray ? '☀️' : '🌙'}
-            </button>
-          )}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+            className="w-10 h-10 grid place-items-center rounded-md bg-slate-800 hover:bg-slate-700 hover:shadow-md hover:shadow-slate-900/60 text-lg transition-all duration-300 hover:-translate-y-0.5"
+          >
+            {theme === 'light' ? '☀️' : '🌙'}
+          </button>
           {!user ? (
             <>
               <Link to="/login" className="px-4 py-2 rounded-md bg-slate-800 hover:bg-slate-700 hover:shadow-md hover:shadow-slate-900/60 text-sm transition-all duration-300 hover:-translate-y-0.5">
@@ -108,15 +106,13 @@ function PublicNavbar({ onSectionNavigate, isCorporateGray = false, onToggleThem
           ))}
           {!user ? (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {onToggleTheme && (
-                <button
-                  onClick={onToggleTheme}
-                  aria-label="Toggle theme"
-                  className="col-span-2 px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-center text-sm transition-all duration-300"
-                >
-                  {isCorporateGray ? '☀️ Original Theme' : '🌙 Corporate Gray'}
-                </button>
-              )}
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="col-span-2 px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-center text-sm transition-all duration-300"
+              >
+                {theme === 'light' ? '☀️ Dark Theme' : '🌙 Light Theme'}
+              </button>
               <Link to="/login" onClick={() => setMenuOpen(false)} className="px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-center text-sm transition-all duration-300">
                 Login
               </Link>
@@ -125,16 +121,25 @@ function PublicNavbar({ onSectionNavigate, isCorporateGray = false, onToggleThem
               </Link>
             </div>
           ) : (
-            <button
-              onClick={() => {
-                logout()
-                setMenuOpen(false)
-                navigate('/')
-              }}
-              className="w-full px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-sm transition-all duration-300"
-            >
-              Logout
-            </button>
+            <div className="space-y-2 pt-2">
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="w-full px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-sm transition-all duration-300"
+              >
+                {theme === 'light' ? '☀️ Dark Theme' : '🌙 Light Theme'}
+              </button>
+              <button
+                onClick={() => {
+                  logout()
+                  setMenuOpen(false)
+                  navigate('/')
+                }}
+                className="w-full px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-sm transition-all duration-300"
+              >
+                Logout
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -143,4 +148,3 @@ function PublicNavbar({ onSectionNavigate, isCorporateGray = false, onToggleThem
 }
 
 export default PublicNavbar
-

@@ -20,61 +20,292 @@ button {
   @apply transition;
 }
 
-.resolveit-home.corporate-gray {
-  background: #e5e7eb !important;
-  color: #1f2937;
+/* ==================== LIGHT THEME OVERRIDES ==================== */
+body.light-theme {
+  background-color: #F8FAFC !important; /* Main Background */
+  color: #475569 !important; /* Paragraph */
 }
 
-.resolveit-home.corporate-gray header {
-  background-color: rgba(229, 231, 235, 0.95) !important;
-  border-color: #9ca3af !important;
+/* Custom Scrollbars in Light Mode */
+body.light-theme ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+body.light-theme ::-webkit-scrollbar-track {
+  background: #F1F5F9; /* Alternate Sections */
+}
+body.light-theme ::-webkit-scrollbar-thumb {
+  background: #E2E8F0; /* Border */
+  border-radius: 4px;
+}
+body.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: #64748B; /* Muted Text */
 }
 
-.resolveit-home.corporate-gray section:first-of-type {
-  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 45%, #4b5563 100%) !important;
+/* 1. Header (Public Pages Navigation) */
+body.light-theme header {
+  background-color: #FFFFFF !important; /* Navbar bg */
+  border-color: #E2E8F0 !important; /* Border */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme header nav button.text-blue-400 {
+  color: #2563EB !important; /* Primary */
+}
+body.light-theme header nav button.text-slate-300,
+body.light-theme header nav a.text-slate-300 {
+  color: #475569 !important; /* Paragraph */
+}
+body.light-theme header nav button:hover,
+body.light-theme header nav a:hover {
+  background-color: #F1F5F9 !important; /* Alternate Sections */
+  color: #0F172A !important; /* Heading */
 }
 
-.resolveit-home.corporate-gray [class*='bg-slate-800'],
-.resolveit-home.corporate-gray [class*='bg-slate-900'],
-.resolveit-home.corporate-gray [class*='bg-slate-950'] {
-  background-color: #d1d5db !important;
+/* 2. Sidebars (Employee & Admin Portals) */
+body.light-theme aside {
+  background-color: #F1F5F9 !important; /* Alternate Sections */
+  border-color: #E2E8F0 !important;
+}
+body.light-theme aside h2 {
+  color: #2563EB !important; /* Primary */
+}
+body.light-theme aside p {
+  color: #64748b !important; /* Muted Text */
+}
+body.light-theme aside nav a {
+  color: #475569 !important; /* Paragraph */
+}
+body.light-theme aside nav a:hover {
+  background-color: #E2E8F0 !important; /* Border */
+  color: #0F172A !important; /* Heading */
+}
+body.light-theme aside nav a span {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #64748B !important;
+}
+/* Selected active link in sidebar */
+body.light-theme aside nav a.bg-indigo-900\/80 {
+  background-color: #2563EB !important; /* Primary */
+  color: #FFFFFF !important;
+}
+body.light-theme aside nav a.bg-indigo-900\/80 span {
+  background-color: #DBEAFE !important; /* Primary Light */
+  border-color: transparent !important;
+  color: #2563EB !important;
 }
 
-.resolveit-home.corporate-gray [class*='border-slate-6'],
-.resolveit-home.corporate-gray [class*='border-slate-7'],
-.resolveit-home.corporate-gray [class*='border-slate-8'] {
-  border-color: #9ca3af !important;
+/* 3. Global Cards, Inputs & Layout Backgrounds */
+body.light-theme .bg-slate-900,
+body.light-theme .bg-slate-950,
+body.light-theme .bg-slate-900\/70,
+body.light-theme .bg-slate-950\/90,
+body.light-theme .min-h-screen.bg-slate-900 {
+  background-color: #F8FAFC !important; /* Main Background */
+}
+body.light-theme .bg-slate-800,
+body.light-theme .bg-slate-800\/80,
+body.light-theme .bg-slate-800\/90,
+body.light-theme .bg-slate-850 {
+  background-color: #FFFFFF !important; /* Cards */
+  border: 1px solid #E2E8F0 !important; /* Border */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+}
+body.light-theme .border-slate-800,
+body.light-theme .border-slate-700,
+body.light-theme .border-slate-600\/60,
+body.light-theme .border-slate-800\/80,
+body.light-theme .border-slate-700\/70 {
+  border-color: #E2E8F0 !important; /* Border */
 }
 
-.resolveit-home.corporate-gray [class*='text-slate-100'],
-.resolveit-home.corporate-gray [class*='text-slate-200'],
-.resolveit-home.corporate-gray [class*='text-slate-300'],
-.resolveit-home.corporate-gray [class*='text-slate-400'],
-.resolveit-home.corporate-gray [class*='text-slate-500'] {
-  color: #374151 !important;
+/* Card hover animation in Light Mode */
+body.light-theme .bg-slate-800:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03) !important;
 }
 
-.resolveit-home.corporate-gray h1,
-.resolveit-home.corporate-gray h2,
-.resolveit-home.corporate-gray h3,
-.resolveit-home.corporate-gray h4,
-.resolveit-home.corporate-gray .font-bold,
-.resolveit-home.corporate-gray .font-semibold {
-  color: #111827 !important;
+/* 4. Inputs, Selects & Textareas */
+body.light-theme input,
+body.light-theme select,
+body.light-theme textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+body.light-theme input::placeholder,
+body.light-theme textarea::placeholder {
+  color: #64748B !important;
+}
+body.light-theme input:focus,
+body.light-theme select:focus,
+body.light-theme textarea:focus {
+  border-color: #2563EB !important; /* Blue Focus Border */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important; /* Blue Focus Ring */
+  outline: none;
 }
 
-.resolveit-home.corporate-gray input,
-.resolveit-home.corporate-gray textarea,
-.resolveit-home.corporate-gray select {
-  background-color: #e5e7eb !important;
-  color: #111827 !important;
-  border-color: #9ca3af !important;
+/* 5. Buttons */
+body.light-theme .bg-blue-500,
+body.light-theme .bg-indigo-600 {
+  background-color: #2563EB !important; /* Primary */
+  color: #FFFFFF !important;
+}
+body.light-theme .bg-blue-500:hover,
+body.light-theme .bg-indigo-600:hover,
+body.light-theme .bg-indigo-700:hover {
+  background-color: #1D4ED8 !important; /* Primary Hover */
+  color: #FFFFFF !important;
+}
+body.light-theme .bg-red-500,
+body.light-theme .bg-red-600 {
+  color: #FFFFFF !important;
 }
 
-.resolveit-home.corporate-gray .bg-blue-500 {
-  background-color: #2563eb !important;
+/* Secondary Buttons */
+body.light-theme button.bg-slate-800,
+body.light-theme a.bg-slate-800,
+body.light-theme button.bg-slate-700,
+body.light-theme a.bg-slate-700 {
+  background-color: #FFFFFF !important; /* White Background */
+  color: #2563EB !important; /* Blue text */
+  border: 1px solid #2563EB !important; /* Blue Border */
+}
+body.light-theme button.bg-slate-800:hover,
+body.light-theme a.bg-slate-800:hover,
+body.light-theme button.bg-slate-700:hover,
+body.light-theme a.bg-slate-700:hover {
+  background-color: #DBEAFE !important; /* Primary Light */
+  color: #1D4ED8 !important; /* Primary Hover */
 }
 
-.resolveit-home.corporate-gray .hover\:bg-blue-600:hover {
-  background-color: #1d4ed8 !important;
+/* 6. Typography */
+body.light-theme .text-slate-100,
+body.light-theme .text-slate-200 {
+  color: #0F172A !important; /* Heading */
+}
+body.light-theme .text-slate-300,
+body.light-theme .text-slate-400 {
+  color: #475569 !important; /* Paragraph */
+}
+body.light-theme .text-slate-500 {
+  color: #64748B !important; /* Muted Text */
+}
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme .font-bold,
+body.light-theme .font-semibold {
+  color: #0F172A !important; /* Heading */
+}
+body.light-theme p {
+  color: #475569 !important; /* Paragraph */
+}
+
+/* 7. Landing Page Top Banner */
+body.light-theme .resolveit-home section.bg-gradient-to-br {
+  background: linear-gradient(180deg, #EFF6FF, #F8FAFC) !important; /* Custom Hero Gradient */
+}
+body.light-theme .resolveit-home section.bg-gradient-to-br h1 {
+  color: #0F172A !important;
+}
+body.light-theme .resolveit-home section.bg-gradient-to-br p {
+  color: #475569 !important;
+}
+body.light-theme .resolveit-home section.bg-gradient-to-br p.text-blue-300 {
+  color: #2563EB !important; /* Primary blue */
+}
+
+/* 8. Tables & Data lists */
+body.light-theme table {
+  background-color: #FFFFFF !important; /* White Background */
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+body.light-theme table thead {
+  background-color: #EFF6FF !important; /* Header bg */
+  color: #0F172A !important; /* Heading text */
+  border-bottom: 2px solid #E2E8F0 !important;
+}
+body.light-theme table tbody tr {
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+body.light-theme table tbody tr:hover {
+  background-color: #F8FAFC !important; /* Row Hover bg */
+}
+body.light-theme table tbody td {
+  color: #475569 !important; /* Paragraph text */
+}
+
+/* 9. Status Badges */
+body.light-theme .text-amber-300 {
+  color: #F59E0B !important; /* Warning / Amber */
+}
+body.light-theme .bg-amber-500\/20 {
+  background-color: #FEF3C7 !important; /* Amber Light */
+  color: #F59E0B !important;
+  border: 1px solid #FDE68A !important;
+}
+
+body.light-theme .text-blue-300 {
+  color: #2563EB !important; /* Primary / Blue */
+}
+body.light-theme .bg-blue-500\/20 {
+  background-color: #DBEAFE !important; /* Blue Light */
+  color: #2563EB !important;
+  border: 1px solid #BFDBFE !important;
+}
+
+body.light-theme .text-emerald-300 {
+  color: #22C55E !important; /* Success / Green */
+}
+body.light-theme .bg-emerald-500\/20 {
+  background-color: #DCFCE7 !important; /* Green Light */
+  color: #22C55E !important;
+  border: 1px solid #BBF7D0 !important;
+}
+
+body.light-theme .bg-slate-500\/20.text-slate-300,
+body.light-theme .bg-slate-500\/20 {
+  background-color: #F1F5F9 !important; /* Alternate Sections / gray */
+  color: #475569 !important; /* Paragraph text */
+  border: 1px solid #E2E8F0 !important; /* Border */
+}
+
+/* 10. Link Accent Contrast Overrides in Light Mode */
+body.light-theme .text-blue-400 {
+  color: #2563EB !important;
+}
+body.light-theme .text-blue-400:hover {
+  color: #1D4ED8 !important;
+}
+body.light-theme .text-blue-500 {
+  color: #2563EB !important;
+}
+body.light-theme .text-blue-500:hover {
+  color: #1D4ED8 !important;
+}
+
+/* 11. Footer */
+body.light-theme footer {
+  background-color: #FFFFFF !important; /* White Footer */
+  border-top: 1px solid #E2E8F0 !important; /* Top Border */
+}
+body.light-theme footer h3,
+body.light-theme footer h4 {
+  color: #0F172A !important; /* Heading */
+}
+body.light-theme footer p,
+body.light-theme footer button,
+body.light-theme footer a {
+  color: #475569 !important; /* Paragraph */
+}
+body.light-theme footer button:hover,
+body.light-theme footer a:hover {
+  color: #0F172A !important;
+}
+body.light-theme footer .border-t {
+  border-color: #E2E8F0 !important;
 }

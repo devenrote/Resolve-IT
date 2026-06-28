@@ -1,12 +1,8 @@
 const validateRegister = (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!name || !email || !password || !role) {
-    return res.status(400).json({ message: 'name, email, password, role are required' });
-  }
-
-  if (!['employee', 'admin'].includes(role)) {
-    return res.status(400).json({ message: 'role must be employee or admin' });
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'name, email, and password are required' });
   }
 
   if (password.length < 6) {

@@ -12,7 +12,6 @@ function RegisterPage() {
     name: '',
     email: '',
     password: '',
-    role: 'employee',
   })
   const [loading, setLoading] = useState(false)
 
@@ -21,7 +20,11 @@ function RegisterPage() {
 
     try {
       setLoading(true)
-      const data = await authApi.register(form)
+      const data = await authApi.register({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      })
       login(data.token, data.user)
       toast.success('Registration successful')
       navigate(data.user.role === 'admin' ? '/admin' : '/employee')
@@ -64,10 +67,6 @@ function RegisterPage() {
               required
               className="w-full"
             />
-            <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full">
-              <option value="employee">Employee</option>
-              <option value="admin">Admin</option>
-            </select>
             <button disabled={loading} className="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-md font-medium disabled:opacity-70">
               {loading ? 'Creating account...' : 'Register'}
             </button>

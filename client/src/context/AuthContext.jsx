@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(localStorage.getItem('resolveit_token'))
   const [loading, setLoading] = useState(true)
+  const [theme, setTheme] = useState(() => localStorage.getItem('resolveit_theme') || 'dark')
 
   useEffect(() => {
     if (token) {
@@ -25,6 +26,19 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
   }, [token])
+
+  useEffect(() => {
+    localStorage.setItem('resolveit_theme', theme)
+    if (theme === 'light') {
+      document.body.classList.add('light-theme')
+    } else {
+      document.body.classList.remove('light-theme')
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
 
   const login = (authToken, authUser) => {
     localStorage.setItem('resolveit_token', authToken)
@@ -48,8 +62,10 @@ export function AuthProvider({ children }) {
       login,
       logout,
       setUser,
+      theme,
+      toggleTheme,
     }),
-    [user, token, loading]
+    [user, token, loading, theme]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

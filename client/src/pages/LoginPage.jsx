@@ -9,7 +9,7 @@ function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
-  const [form, setForm] = useState({ email: '', password: '', role: 'employee' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -17,11 +17,6 @@ function LoginPage() {
     try {
       setLoading(true)
       const data = await authApi.login({ email: form.email, password: form.password })
-
-      if (data.user.role !== form.role) {
-        toast.error(`This account is ${data.user.role}. Please select ${data.user.role} and try again.`)
-        return
-      }
 
       login(data.token, data.user)
       toast.success('Login successful')
@@ -59,10 +54,6 @@ function LoginPage() {
             required
             className="w-full"
           />
-          <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full">
-            <option value="employee">Employee</option>
-            <option value="admin">Admin</option>
-          </select>
           <button disabled={loading} className="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded-md font-medium disabled:opacity-70">
             {loading ? 'Signing in...' : 'Login'}
           </button>

@@ -7,9 +7,6 @@ import { contactApi } from '../services/contactService'
 function HomePage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [isCorporateGray, setIsCorporateGray] = useState(
-    () => localStorage.getItem('resolveit_home_theme') === 'corporate-gray'
-  )
   const [contactForm, setContactForm] = useState({ email: '', message: '' })
   const [sending, setSending] = useState(false)
 
@@ -31,9 +28,7 @@ function HomePage() {
     navigate('/', { replace: true, state: null })
   }, [location.state, navigate])
 
-  useEffect(() => {
-    localStorage.setItem('resolveit_home_theme', isCorporateGray ? 'corporate-gray' : 'original')
-  }, [isCorporateGray])
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault()
@@ -83,13 +78,10 @@ function HomePage() {
   return (
     <div
       id="top"
-      className={`resolveit-home min-h-screen bg-slate-900 text-slate-100 ${isCorporateGray ? 'corporate-gray' : ''
-        }`}
+      className="resolveit-home min-h-screen bg-slate-900 text-slate-100"
     >
       <PublicNavbar
         onSectionNavigate={scrollToSection}
-        isCorporateGray={isCorporateGray}
-        onToggleTheme={() => setIsCorporateGray((prev) => !prev)}
       />
 
       <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
